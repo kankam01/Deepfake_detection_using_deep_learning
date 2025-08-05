@@ -1,6 +1,111 @@
 {% extends 'base.html' %}
 {%load static%}
 {%block content%}
+
+<!-- <style>
+    body {
+        margin: 0;
+        height: 100vh;
+        overflow-x: hidden;
+    }
+    .bg {
+        /* Change the background image here */
+        background-image: url('{% static "images/newbackground.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .card {
+        background: white; /* Semi-transparent white for readability */
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        max-width: 500px;
+        width: 100%;
+        margin: 20px;
+    }
+    .logo img {
+        max-width: 150px;
+        margin-bottom: 20px;
+    }
+    h1 {
+        font-size: 2rem;
+        color: #333;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group label {
+        font-weight: bold;
+        color: #333;
+        display: block;
+        margin-bottom: 8px;
+    }
+    .form-control {
+        border-radius: 5px;
+        padding: 10px;
+        font-size: 1rem;
+    }
+    #slider {
+        margin: 10px 0;
+        background: #e0e0e0;
+        border: none;
+    }
+    #slider .ui-slider-handle {
+        background: #28a745;
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+    #slider-value {
+        font-weight: bold;
+        color: #28a745;
+    }
+    .btn-success {
+        background-color: #28a745;
+        border: none;
+        padding: 12px;
+        font-size: 1.1rem;
+        border-radius: 5px;
+        width: 100%;
+        transition: background-color 0.3s;
+    }
+    .btn-success:hover {
+        background-color: #218838;
+    }
+    .alert-danger {
+        font-size: 0.9rem;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 5px;
+    }
+    #videos {
+        display: none; /* Hidden as in original */
+        width: 100%;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    @media (max-width: 576px) {
+        .card {
+            padding: 20px;
+            margin: 10px;
+        }
+        h1 {
+            font-size: 1.5rem;
+        }
+    }
+</style> -->
+
 <div class="bg" >
 <div class="container">
     
@@ -41,7 +146,7 @@
                         {%endfor%}
                         {%endif%}
                     </div>
-                    <button id="videoUpload" type="submit" name="submit" class="btn btn-success mt-3 btn-block">Upload</button>
+                    <button id="videoUpload" type="submit" name="submit" class="btn btn-success mt-3 btn-block">Upload Your Video</button>
                 </form>
             </div>
         </div>

@@ -1,50 +1,48 @@
 body {
     height: 100%;
+    margin: 0;
 }
+
 .bg {
-    /* The image used */
-    background-image: url("/static/images/background1.png");
-  
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-  
-    /* Center and scale the image nicely */
+    background-image: url('{% static "images/newbackground.jpg" %}');
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-size: cover;
-
-
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-section{
+section {
     padding-top: 60px;
 }
 
-.width-300{
+.width-300 {
     width: 300px;
     margin: auto;
     padding: 20px;
-    box-shadow: 0 0px 9px 2px #ccc;
+    box-shadow: 0 0 9px 2px #ccc;
 }
 
-.width-400{
+.width-400 {
     width: 400px;
     margin: auto;
     padding: 20px;
     margin-top: 80px;
     margin-bottom: 150px;
-    box-shadow: 0 0px 9px 2px #ccc;
+    box-shadow: 0 0 9px 2px #ccc;
+    background: rgba(255, 255, 255, 0.8); /* Semi-transparent for readability */
 }
 
-.width-500{
+.width-500 {
     width: 500px;
     margin: auto;
     padding: 20px;
-    box-shadow: 0 0px 9px 2px #ccc;
+    box-shadow: 0 0 9px 2px #ccc;
 }
 
-#videos{
+#videos {
     display: none;
 }
 
@@ -60,13 +58,13 @@ canvas {
 }
 
 #preprocessed_images {
-  white-space: nowrap;
-  width: auto;
-  height: 250px;
-  padding: 20px;
-  overflow-x: scroll;
-  overflow-y: hidden;
-  box-shadow: 0 0px 9px 2px #ccc;
+    white-space: nowrap;
+    width: auto;
+    height: 250px;
+    padding: 20px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    box-shadow: 0 0 9px 2px #ccc;
 }
 
 #faces_images {
@@ -76,7 +74,7 @@ canvas {
     padding: 20px;
     overflow-x: scroll;
     overflow-y: hidden;
-    box-shadow: 0 0px 9px 2px #ccc;
+    box-shadow: 0 0 9px 2px #ccc;
 }
 
 .faces {
@@ -84,14 +82,14 @@ canvas {
     padding-bottom: 50px;
 }
 
-#heatmap_images{
+#heatmap_images {
     white-space: nowrap;
     width: auto;
     height: 200px;
     padding: 20px;
     overflow-x: scroll;
     overflow-y: hidden;
-    box-shadow: 0 0px 9px 2px #ccc;
+    box-shadow: 0 0 9px 2px #ccc;
     margin-bottom: 20px;
 }
 
@@ -99,7 +97,3 @@ canvas {
     padding-right: 20px;
     padding-bottom: 50px;
 }
-
-/* span.spinner-border {
-    display: none;
-} */
