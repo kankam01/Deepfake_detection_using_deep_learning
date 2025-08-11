@@ -5,24 +5,144 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Select Detection Type</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+    }
+    .container {
+      width: 100%;
+      max-width: 900px;
+      padding: 2rem;
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 1.5rem;
+      justify-content: center;
+    }
+    .card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 360px;
+      display: flex;
+      flex-direction: column;
+      min-height: 280px; /* Ensure cards have equal height */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .card-header i {
+      color: #3b82f6;
+      font-size: 1.5rem;
+    }
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #111827;
+    }
+    .card-content {
+      font-size: 0.875rem;
+      color: #4b5563;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+      flex-grow: 1;
+    }
+    .card-button {
+      width: 100%;
+      padding: 0.75rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: white;
+      border-radius: 0.5rem;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: background 0.3s ease, transform 0.2s ease;
+      text-align: center;
+      margin-top: auto; /* Push button to bottom of card */
+      text-decoration: none;
+      padding-right: 0;
+      padding-left: 0;
+    }
+    .card-button:hover {
+      transform: translateY(-2px);
+    }
+    .card-button:active {
+      transform: translateY(0);
+    }
+    .deepfake-button {
+      background: #10b981;
+    }
+    .deepfake-button:hover {
+      background: #059669;
+    }
+    .text-button {
+      background: #8b5cf6;
+    }
+    .text-button:hover {
+      background: #7c3aed;
+    }
+    @media (max-width: 768px) {
+      .container {
+        flex-wrap: wrap;
+        padding: 1.5rem;
+      }
+      .card {
+        max-width: 100%;
+        min-height: auto; /* Allow cards to adjust height on smaller screens */
+      }
+    }
+  </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
-  <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md text-center">
-    <h1 class="text-2xl font-bold mb-6">Select Detection Type</h1>
-    <a
-      href="{% url 'ml_app:home' %}"
-      class="block w-full bg-green-500 text-white p-2 rounded mb-4 hover:bg-green-600"
-    >
-      Deepfake Detection
-    </a>
-    <a
-      href="#"
-      onclick="alert('Text detection project link will be provided later.'); return false;"
-      class="block w-full bg-purple-500 text-white p-2 rounded hover:bg-purple-600"
-    >
-      Text Detection
-    </a>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <i class="fa-solid fa-shield-halved"></i>
+        <h2 class="card-title">Deepfake Detection</h2>
+      </div>
+      <div class="card-content">
+        Analyze images and videos to identify manipulated content using advanced machine learning algorithms. Detect subtle inconsistencies and artifacts to ensure authenticity and combat misinformation.
+      </div>
+      <a href="{% url 'ml_app:home' %}" class="card-button deepfake-button">
+         Explore Deepfake Detection <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <i class="fa-solid fa-file-lines"></i>
+        <h2 class="card-title">Text Detection</h2>
+      </div>
+      <div class="card-content">
+        Identify and analyze text for signs of AI-generated or misleading content. Our tools examine linguistic patterns and contextual cues to ensure the integrity of textual information.
+      </div>
+      <a
+        href="#"
+        onclick="alert('Text detection project link will be provided later.'); return false;"
+        class="card-button text-button"
+      >
+         Explore Text Detection <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
   </div>
 </body>
 </html>

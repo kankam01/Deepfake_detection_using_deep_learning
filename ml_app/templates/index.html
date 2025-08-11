@@ -256,6 +256,21 @@
     .btn-success:hover {
         background-color: #218838;
     }
+    .btn-clear {
+        background-color: #dc3545;
+        border: none;
+        padding: 12px;
+        font-size: 1.1rem;
+        border-radius: 5px;
+        width: 100%;
+        transition: background-color 0.3s;
+        margin-top: 10px;
+        color: #e0e0e0;
+    }
+    .btn-clear:hover {
+        background-color: #c82333;
+        color: #e0e0e0;
+    }
     .alert-danger {
         font-size: 0.9rem;
         padding: 10px;
@@ -283,7 +298,7 @@
             <p id="tipText"></p>
         </div>
         <div class="wait-message">
-            Analyzing your video may take a moment, please wait...
+            Analyzing your video may take some few minutes, please wait...
         </div>
     </div>
 </div>
@@ -328,6 +343,7 @@
                             {% endif %}
                         </div>
                         <button id="videoUpload" type="submit" name="submit" class="btn btn-success mt-3 btn-block">Upload Your Video</button>
+                        <button type="button" id="clearVideo" class="btn btn-clear mt-3 btn-block">Clear Video</button>
                     </form>
                 </div>
             </div>
@@ -387,6 +403,26 @@
         $('#video-upload').on('submit', function() {
             $('#loadingScreen').fadeIn();
             cycleTips();
+        });
+
+        // Clear video input and hide video preview
+        $('#clearVideo').on('click', function() {
+            $('#{{ form.upload_video_file.id_for_label }}').val(''); // Clear the file input
+            $('#videos').hide(); // Hide the video preview
+            $('#video_source').attr('src', ''); // Clear the video source
+            $('#videos')[0].load(); // Reload video element to clear source
+            $('#{{ form.upload_video_file.id_for_label }}').show(); // Ensure the input field remains visible
+        });
+
+        // Show video preview when a file is selected
+        $('#{{ form.upload_video_file.id_for_label }}').on('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const videoURL = URL.createObjectURL(file);
+                $('#video_source').attr('src', videoURL);
+                $('#videos').show();
+                $('#videos')[0].load();
+            }
         });
     });
 </script>
