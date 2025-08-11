@@ -1,10 +1,13 @@
+<<<<<<< HEAD
+
 # Deep fake detection Django Application
+
 ## Requirements:
 
 **Note :** Nvidia GPU is mandatory to run the application.
-- CUDA version >= 10.0 for GPU
-- GPU Compute Capability > 3.0 
 
+- CUDA version >= 10.0 for GPU
+- GPU Compute Capability > 3.0
 
 You can find the list of requirements in [requirements.txt](https://github.com/abhijitjadhav1998/Deepfake_detection_using_deep_learning/blob/master/Django%20Application/requirements.txt). Main requirements are listed below:
 
@@ -21,29 +24,35 @@ Django >= v3.0
 - templates -> Template files for HTML
 
 <b>Note:</b> Before running the project make sure you have created directories namely <strong>models, uploaded_images, uploaded_videos</strong> in the project root and that you have proper permissions to access them.
+
 # Running application on Docker
+
 #### Step 1: Install docker desktop and start the Docker daemon
 
 #### Step 2: Run the deepfake detection docker docker image
+
 ```
 docker run --rm --gpus all -v static_volume:/home/app/staticfiles/ -v media_volume:/app/uploaded_videos/ --name=deepfakeapplication abhijitjadhav1998/deefake-detection-20framemodel
 ```
+
 #### Step 3: Run the Ngnix reverse proxy server docker image
+
 ```
 docker run -p 80:80 --volumes-from deepfakeapplication -v static_volume:/home/app/staticfiles/ -v media_volume:/app/uploaded_videos/ abhijitjadhav1998/deepfake-nginx-proxyserver
 ```
+
 #### Step 4: All set now launch up your application at [http://localhost:80](http://localhost:80)
 
-### Step 5: Star⭐ this repo 😉 on <a href="https://github.com/abhijitjadhav1998/Deepfake_detection_using_deep_learning" >  <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" /> </a> and   Star⭐ this image on <a href="https://hub.docker.com/r/abhijitjadhav1998/deefake-detection-20framemodel">  <img src="https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white" /> </a>
+### Step 5: Star⭐ this repo 😉 on <a href="https://github.com/abhijitjadhav1998/Deepfake_detection_using_deep_learning" > <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" /> </a> and Star⭐ this image on <a href="https://hub.docker.com/r/abhijitjadhav1998/deefake-detection-20framemodel"> <img src="https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white" /> </a>
 
 ## We deserve a Coffee ☕ <a href="https://www.buymeacoffee.com/abhijitjadhav" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 35px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
-
 
 Please note that currently we have only pushed the image of 20 Frames model, If you can to create your own image of other frames model follow the steps given in the [blog](https://abhijithjadhav.medium.com/dockerise-deepfake-detection-django-application-using-nvidia-cuda-40cdda3b6d38).
 
 # Running application locally on your machine
 
 ### Prerequisite
+
 1. Copy your trained model to the models folder.
    - You can download our trained models from the [Google Drive](https://drive.google.com/drive/folders/1UX8jXUXyEjhLLZ38tcgOwGsZ6XFSLDJ-?usp=sharing) or you can train your models using the steps mentioned in Model Creation directory.
 
@@ -69,15 +78,133 @@ Please note that currently we have only pushed the image of 20 Frames model, If 
 
 - You can download our trained models from [Google Drive](https://drive.google.com/drive/folders/1UX8jXUXyEjhLLZ38tcgOwGsZ6XFSLDJ-?usp=sharing)
 
-**Note :** The model name must be in specified format only i.e *model_84_acc_10_frames_final_data.pt*. Make sure that no of frames must be mentioned after certain 3 underscores `_` , in the above example the model is for 10 frames.
-
+**Note :** The model name must be in specified format only i.e _model_84_acc_10_frames_final_data.pt_. Make sure that no of frames must be mentioned after certain 3 underscores `_` , in the above example the model is for 10 frames.
 
 ### Step 6: Run project
 
 `python manage.py runserver`
 
-## Demo 
+## Demo
+
 ### You can watch the [youtube video](https://www.youtube.com/watch?v=_q16aJTXVRE&t=823s) for demo
+
 <p align="center">
   <img src="https://github.com/abhijitjadhav1998/Deepfake_detection_using_deep_learning/blob/master/github_assets/fakegif.gif" />
 </p>  
+=======
+# Deepfake detection using Deep Learning (ResNext and LSTM)
+
+## Give a Star⭐ to repo and Don't forget to <a href="https://www.buymeacoffee.com/abhijitjadhav" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 35px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+
+</a>
+
+## Latest Update
+
+#### We have dockerised the [Django Application](https://github.com/abhijitjadhav1998/Deepfake_detection_using_deep_learning/tree/master/Django%20Application) now you can spin up a container within seconds without worring about dependencies
+
+## 1. Introduction
+
+This projects aims in detection of video deepfakes using deep learning techniques like ResNext and LSTM. We have achived deepfake detection by using transfer learning where the pretrained ResNext CNN is used to obtain a feature vector, further the LSTM layer is trained using the features. For more details follow the [documentaion](https://github.com/abhijitjadhav1998/Deepfake_detection_using_deep_learning/tree/master/Documentation).
+
+You can also watch [this Youtube video](https://www.youtube.com/watch?v=_q16aJTXVRE) to get a better intuition about the project.
+You can watch [this playList](https://www.youtube.com/watch?v=quJ8Rv84oA0&list=PLNIj0dkfMA1FsD5xR4IEc8vdwr66_WExl) for step by step installation.
+
+You can read more about the project on <a href="https://abhijithjadhav.medium.com/deepfake-video-detection-using-long-short-term-memory-df3674f83ecc" target="_blank"><img src="https://img.shields.io/badge/Medium-12100E?style=for-the-badge&logo=medium&logoColor=white" alt="Medium" /></a>&nbsp;
+
+## 2. Directory Structure
+
+For ease of understanding the project is structured in below format
+
+```
+Deepfake_detection_using_deep_learning
+    |
+    |--- Django Application
+    |--- Model Creation
+    |--- Documentaion
+```
+
+1. Django Application
+   - This directory consists of the django made application of our work. Where a user can upload the video and submit it to the model for prediction. The trained model performs the prediction and the result is displayed on the screen.
+2. Model Creation
+   - This directory consists of the step by step process of creating and training a deepfake detection model using our approach.
+3. Documentation
+   - This directory consists of all the documentation done during the project
+
+## 3. System Architecture
+
+<p align="center">
+  <img src="https://github.com/abhijitjadhav1998/Deepfake_detection_using_deep_learning/blob/master/github_assets/System%20Architecture.png" />
+</p>
+
+## 4. Demo
+
+### You can watch the [youtube video](https://www.youtube.com/watch?v=_q16aJTXVRE&t=823s) for demo
+
+<p align="center">
+  <img src="https://github.com/abhijitjadhav1998/Deepfake_detection_using_deep_learning/blob/master/github_assets/fakegif.gif" />
+</p>
+
+## 5. Our Results
+
+| Model Name                            | No of videos | No of Frames | Accuracy |
+| ------------------------------------- | ------------ | ------------ | -------- |
+| model_84_acc_10_frames_final_data.pt  | 6000         | 10           | 84.21461 |
+| model_87_acc_20_frames_final_data.pt  | 6000         | 20           | 87.79160 |
+| model_89_acc_40_frames_final_data.pt  | 6000         | 40           | 89.34681 |
+| model_90_acc_60_frames_final_data.pt  | 6000         | 60           | 90.59097 |
+| model_91_acc_80_frames_final_data.pt  | 6000         | 80           | 91.49818 |
+| model_93_acc_100_frames_final_data.pt | 6000         | 100          | 93.58794 |
+
+## 6. Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.linkedin.com/in/abhijitjadhav1998/"><img src="https://avatars.githubusercontent.com/u/38549908?v=4?s=100" width="100px;" alt="Abhijit Jadhav"/><br /><sub><b>Abhijit Jadhav</b></sub></a><br /><a href="#projectManagement-abhijitjadhav1998" title="Project Management">📆</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://vthonte.vercel.app/"><img src="https://avatars.githubusercontent.com/u/43621438?v=4?s=100" width="100px;" alt="Vishwesh Thonte"/><br /><sub><b>Vishwesh Thonte</b></sub></a><br /><a href="#maintenance-vthonte" title="Maintenance">🚧</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+#### 6.1 Offline Contributors
+
+1.  Jay Patel
+2.  Hitendra Patil
+3.  Abhishek Patange
+
+## 7. License
+
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
+## 8. We welcome Open Source Contribution.
+
+### Below are the some changes that can be applied to the project. New Ideas will be appreciated.
+
+- [ ] Deploying the applications in free cloud
+- [ ] Creating open source API for detection
+- [ ] Batch processing of entire video instead of processing first 'x' frames.
+- [ ] Optimizing the code for faster execution.
+
+#### Completed
+
+- [x] Dockerizing the app
+- [x] Enabling working of project on Non Cuda Computers. i.e on normal or AMD GPUs
+
+## 9. Dont forget to Star⭐ this repo 😉 and <a href="https://www.buymeacoffee.com/abhijitjadhav" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 35px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+
+> > > > > > > f3422e6f7ef87f1d16c641bfa5608a6dba0a9054
