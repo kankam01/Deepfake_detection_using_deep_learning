@@ -1,0 +1,176 @@
+{% extends 'news_analyzer/base.html' %}
+
+{% block title %}Article Detail - Fake News Detector{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Article Information -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="mb-0"><i class="fas fa-newspaper"></i> Article Details</h3>
+            </div>
+            <div class="card-body">
+                <h4 class="mb-3">{{ article.title }}</h4>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Source:</strong> {{ article.source|default:"Not specified" }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Analyzed:</strong> {{ article.analyzed_at|date:"M d, Y H:i"|default:"Not analyzed" }}
+                    </div>
+                </div>
+                
+                {% if article.url %}
+                    <div class="mb-3">
+                        <strong>URL:</strong> 
+                        <a href="{{ article.url }}" target="_blank" class="text-break">{{ article.url }}</a>
+                    </div>
+                {% endif %}
+                
+                <div class="mb-3">
+                    <strong>Content:</strong>
+                    <div class="mt-2 p-3 bg-light rounded">
+                        {{ article.content|linebreaks }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Analysis Results -->
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0"><i class="fas fa-chart-pie"></i> Analysis Results</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 text-center mb-4">
+                        {% if article.is_fake %}
+                            <div class="display-1 text-danger">
+                                <i class="fas fa-times-circle"></i>
+                            </div>
+                            <h3 class="text-danger">LIKELY FAKE NEWS</h3>
+                        {% elif article.is_fake == False %}
+                            <div class="display-1 text-success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <h3 class="text-success">LIKELY REAL NEWS</h3>
+                        {% else %}
+                            <div class="display-1 text-warning">
+                                <i class="fas fa-question-circle"></i>
+                            </div>
+                            <h3 class="text-warning">UNCERTAIN</h3>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h5>Confidence Score</h5>
+                        {% if article.confidence_score %}
+                            <div class="confidence-bar mb-2">
+                                <div class="confidence-fill 
+                                    {% if article.confidence_score > 0.7 %}confidence-high
+                                    {% elif article.confidence_score > 0.45 %}confidence-medium
+                                    {% else %}confidence-low{% endif %}"
+                                     style="width: {{ article.confidence_score|floatformat:0 }}%;">
+                                </div>
+                            </div>
+                            <p class="text-muted">{{ article.confidence_score|floatformat:3 }} ({{ article.confidence_score|floatformat:0 }}%)</p>
+                        {% else %}
+                            <p class="text-muted">No confidence score available</p>
+                        {% endif %}
+                        
+                        <h5>Analysis Date</h5>
+                        <p class="text-muted">{{ article.analyzed_at|date:"F d, Y at H:i"|default:"Not analyzed" }}</p>
+                        
+                        <h5>Article ID</h5>
+                        <p class="text-muted">#{{ article.id }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <!-- Quick Actions -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-bolt"></i> Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'news_analyzer:home' %}" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Analyze Another Article
+                    </a>
+                    <a href="{% url 'news_analyzer:results_dashboard' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-chart-bar"></i> View All Results
+                    </a>
+                    <a href="{% url 'news_analyzer:training_dashboard' %}" class="btn btn-outline-success">
+                        <i class="fas fa-cogs"></i> Training Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Analysis Tips -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-lightbulb"></i> Analysis Tips</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="fas fa-info-circle text-info me-2"></i>
+                        Check multiple sources for verification
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-info-circle text-info me-2"></i>
+                        Look for credible citations and references
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-info-circle text-info me-2"></i>
+                        Be wary of sensationalist language
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-info-circle text-info me-2"></i>
+                        Verify the publication date and source
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-info-circle text-info me-2"></i>
+                        Use fact-checking websites as additional tools
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Article Metadata -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-info"></i> Article Metadata</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <tr>
+                        <td><strong>Created:</strong></td>
+                        <td>{{ article.created_at|date:"M d, Y H:i" }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Word Count:</strong></td>
+                        <td>{{ article.content|wordcount }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Character Count:</strong></td>
+                        <td>{{ article.content|length }}</td>
+                    </tr>
+                    {% if article.source %}
+                        <tr>
+                            <td><strong>Source:</strong></td>
+                            <td>{{ article.source }}</td>
+                        </tr>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

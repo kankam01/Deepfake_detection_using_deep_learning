@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ml_app.apps.MlAppConfig',
+    'news_analyzer.apps.NewsAnalyzerConfig',
 ]
 
 MIDDLEWARE = [

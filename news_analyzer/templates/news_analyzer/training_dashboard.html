@@ -1,0 +1,199 @@
+{% extends 'news_analyzer/base.html' %}
+
+{% block title %}Training Dashboard - Fake News Detector{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Training Data Management -->
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h3 class="mb-0"><i class="fas fa-database"></i> Training Data</h3>
+                <a href="{% url 'news_analyzer:add_training_data' %}" class="btn btn-light">
+                    <i class="fas fa-plus"></i> Add Data
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h4 class="text-primary">{{ stats.total_samples }}</h4>
+                            <p class="text-muted mb-0">Total Samples</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h4 class="text-danger">{{ stats.fake_samples }}</h4>
+                            <p class="text-muted mb-0">Fake News</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h4 class="text-success">{{ stats.real_samples }}</h4>
+                            <p class="text-muted mb-0">Real News</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h4 class="text-info">{{ stats.latest_accuracy|floatformat:3 }}</h4>
+                            <p class="text-muted mb-0">Latest Accuracy</p>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if training_data %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Label</th>
+                                    <th>Source</th>
+                                    <th>Added</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in training_data %}
+                                    <tr>
+                                        <td>{{ item.title|truncatechars:50 }}</td>
+                                        <td>
+                                            {% if item.is_fake %}
+                                                <span class="badge bg-danger">Fake</span>
+                                            {% else %}
+                                                <span class="badge bg-success">Real</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ item.source|default:"-" }}</td>
+                                        <td>{{ item.created_at|date:"M d, Y" }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-database fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No training data available</h5>
+                        <p class="text-muted">Add some training data to get started with model training.</p>
+                        <a href="{% url 'news_analyzer:add_training_data' %}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add Training Data
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Model Training -->
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0"><i class="fas fa-cogs"></i> Model Training</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5>Train New Model</h5>
+                        <p class="text-muted">
+                            Train a new machine learning model using the current training data. 
+                            The model will be evaluated on a test set and performance metrics will be recorded.
+                        </p>
+                        
+                        {% if stats.total_samples < 10 %}
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                You need at least 10 training samples to train the model. 
+                                Currently you have {{ stats.total_samples }} samples.
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <form method="post" action="{% url 'news_analyzer:train_model' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary btn-lg" 
+                                    {% if stats.total_samples < 10 %}disabled{% endif %}>
+                                <i class="fas fa-play"></i> Train Model
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <!-- Model Performance -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-chart-line"></i> Model Performance</h5>
+            </div>
+            <div class="card-body">
+                {% if model_performance %}
+                    {% for performance in model_performance %}
+                        <div class="border-bottom pb-3 mb-3">
+                            <h6>{{ performance.model_name }}</h6>
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <small class="text-muted">Accuracy</small>
+                                    <div class="h5 text-primary">{{ performance.accuracy|floatformat:3 }}</div>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">F1 Score</small>
+                                    <div class="h5 text-success">{{ performance.f1_score|floatformat:3 }}</div>
+                                </div>
+                            </div>
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <small class="text-muted">Precision</small>
+                                    <div class="h6">{{ performance.precision|floatformat:3 }}</div>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">Recall</small>
+                                    <div class="h6">{{ performance.recall|floatformat:3 }}</div>
+                                </div>
+                            </div>
+                            <small class="text-muted">
+                                {{ performance.training_samples }} training, {{ performance.test_samples }} test samples
+                            </small>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-3">
+                        <i class="fas fa-chart-line fa-2x text-muted mb-2"></i>
+                        <p class="text-muted">No model performance data available</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Training Tips -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-lightbulb"></i> Training Tips</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Include diverse sources and topics
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Balance fake and real news samples
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Use clear, unambiguous examples
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Include recent and relevant content
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Aim for at least 50+ training samples
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

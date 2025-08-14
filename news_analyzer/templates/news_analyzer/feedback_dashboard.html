@@ -1,0 +1,110 @@
+{% extends 'news_analyzer/base.html' %}
+
+{% block title %}Feedback Dashboard - Fake News Detector{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h3 class="mb-0"><i class="fas fa-comment-dots"></i> User Feedback</h3>
+            </div>
+            <div class="card-body">
+                {% if feedbacks %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Article</th>
+                                    <th>Original Result</th>
+                                    <th>User Correction</th>
+                                    <th>Comment</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for feedback in feedbacks %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ feedback.article.title|truncatechars:60 }}</strong>
+                                            <br><small class="text-muted">{{ feedback.article.source|default:"No source" }}</small>
+                                        </td>
+                                        <td>
+                                            {% if feedback.article.is_fake %}
+                                                <span class="badge bg-danger">Fake</span>
+                                            {% elif feedback.article.is_fake == False %}
+                                                <span class="badge bg-success">Real</span>
+                                            {% else %}
+                                                <span class="badge bg-warning">Unknown</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if feedback.user_correction %}
+                                                <span class="badge bg-danger">Fake</span>
+                                            {% else %}
+                                                <span class="badge bg-success">Real</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if feedback.feedback_comment %}
+                                                {{ feedback.feedback_comment|truncatechars:100 }}
+                                            {% else %}
+                                                <span class="text-muted">No comment</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ feedback.created_at|date:"M d, Y H:i" }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-comment-dots fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No feedback yet</h5>
+                        <p class="text-muted">Users haven't submitted any corrections yet.</p>
+                        <a href="{% url 'news_analyzer:results_dashboard' %}" class="btn btn-primary">
+                            <i class="fas fa-chart-bar"></i> View Results
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+{% if feedbacks %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-comment-dots text-info fa-2x mb-2"></i>
+                <h4>{{ stats.total_feedback }}</h4>
+                <p class="text-muted mb-0">Total Feedback</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-times-circle text-danger fa-2x mb-2"></i>
+                <h4>{{ stats.corrections_to_fake }}</h4>
+                <p class="text-muted mb-0">Marked as Fake</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-check-circle text-success fa-2x mb-2"></i>
+                <h4>{{ stats.corrections_to_real }}</h4>
+                <p class="text-muted mb-0">Marked as Real</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %} 

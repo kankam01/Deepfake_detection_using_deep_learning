@@ -1,0 +1,489 @@
+{% extends 'news_analyzer/base.html' %}
+
+{% block title %}Home - Fake News Detector{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-start g-4">
+    <div class="col-lg-8">
+        <div class="card mb-4 shadow-lg rounded-4 border-0">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0 d-flex align-items-center gap-2"><i class="fas fa-search"></i> <span>Analyze News Article</span></h3>
+            </div>
+            <div class="card-body">
+                <!-- Tab Navigation -->
+                <ul class="nav nav-tabs mb-4 rounded-3 overflow-hidden bg-light" id="analysisTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="manual-tab" data-bs-toggle="tab" data-bs-target="#manual" type="button" role="tab" aria-controls="manual" aria-selected="false">
+                            <i class="fas fa-edit"></i> <span class="fw-bold">Manual Input</span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="url-tab" data-bs-toggle="tab" data-bs-target="#url" type="button" role="tab" aria-controls="url" aria-selected="true">
+                            <i class="fas fa-link"></i> <span class="fw-bold">URL Analysis</span>
+                        </button>
+                    </li>
+                </ul>
+                
+                <!-- Tab Content -->
+                <div class="tab-content" id="analysisTabContent">
+                    <!-- Manual Input Tab -->
+                    <div class="tab-pane" id="manual" role="tabpanel" aria-labelledby="manual-tab">
+                        <form id="analyzeForm" class="p-3 rounded-3 bg-white border">
+                            <div class="mb-3">
+                                <label for="title" class="form-label fw-semibold">Article Title (Optional)</label>
+                                <input type="text" class="form-control" id="title" name="title"
+                                       placeholder="Enter the article title...">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="content" class="form-label fw-semibold">Article Content *</label>
+                                <textarea class="form-control" id="content" name="content" rows="6" required
+                                          placeholder="Paste the article content here..."></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="source" class="form-label fw-semibold">Source (Optional)</label>
+                                <input type="text" class="form-control" id="source" name="source"
+                                       placeholder="e.g., CNN, BBC, etc.">
+                            </div>
+                            
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary btn-lg px-5 py-2 shadow-sm rounded-pill">
+                                    <i class="fas fa-search"></i> <span class="fw-bold">Analyze Article</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- URL Analysis Tab -->
+                    <div class="tab-pane show active" id="url" role="tabpanel" aria-labelledby="url-tab">
+                        <div class="alert alert-info d-flex align-items-center gap-2 rounded-3 shadow-sm">
+                            <i class="fas fa-link fa-lg"></i> 
+                            <span class="fw-semibold">Please insert the link to the article below</span>
+                        </div>
+                        <form id="urlAnalyzeForm" class="p-3 rounded-3 bg-white border mt-3">
+                            <div class="mb-3">
+                                <label for="articleUrl" class="form-label fw-semibold">Article URL *</label>
+                                <input type="url" class="form-control" id="articleUrl" name="articleUrl" required
+                                       placeholder="https://example.com/article">
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle text-primary"></i> 
+                                    <span class="text-muted">We'll automatically extract the article content and analyze it for fake news detection.</span>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary btn-lg px-5 py-2 shadow-sm rounded-pill">
+                                    <i class="fas fa-link"></i> <span class="fw-bold">Analyze URL</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="loading mt-3" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 fw-semibold text-primary">Analyzing article...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results Section -->
+        <div class="card" id="resultsCard" style="display: none;">
+            <div class="card-header">
+                <h4 class="mb-0"><i class="fas fa-chart-pie"></i> Analysis Results</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="text-center mb-3">
+                            <div id="resultIcon" class="display-1"></div>
+                            <h4 id="resultText"></h4>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Confidence Score</h5>
+                        <div class="confidence-bar">
+                            <div id="confidenceFill" class="confidence-fill"></div>
+                        </div>
+                        <p id="confidenceText" class="text-muted"></p>
+                        
+                        <h5>Explanation</h5>
+                        <p id="explanationText"></p>
+                        
+                        <!-- Additional article info for URL analysis -->
+                        <div id="articleInfo" style="display: none;">
+                            <h5>Article Information</h5>
+                            <div class="row">
+                                <div class="col-6">
+                                    <small class="text-muted">Source:</small><br>
+                                    <span id="articleSource"></span>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">Reliability:</small><br>
+                                    <span id="sourceReliability"></span>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-6">
+                                    <small class="text-muted">Published:</small><br>
+                                    <span id="publishedAt"></span>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">Author:</small><br>
+                                    <span id="articleAuthor"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Enhanced Fact-Checking Results -->
+                        <div id="factCheckResults" style="display: none;">
+                            <h5>Fact-Checking Analysis</h5>
+                            <div class="row">
+                                <div class="col-6">
+                                    <small class="text-muted">Content Analysis:</small><br>
+                                    <span id="contentAnalysis"></span>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">Google Fact Check:</small><br>
+                                    <span id="googleFactCheck"></span>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-12">
+                                    <small class="text-muted">Fact-Check Claims:</small><br>
+                                    <div id="factCheckClaims" class="small"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-3">
+                    <a href="#" id="viewDetailsBtn" class="btn btn-outline-primary">
+                        <i class="fas fa-eye"></i> View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <!-- Statistics Cards -->
+        <div class="row">
+            <div class="col-12 mb-3">
+                <div class="stats-card">
+                    <div class="text-center">
+                        <i class="fas fa-newspaper fa-2x mb-2"></i>
+                        <h4>{{ stats.total_articles }}</h4>
+                        <p class="mb-0">Total Articles Analyzed</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-6 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-times-circle text-danger fa-2x mb-2"></i>
+                        <h5>{{ stats.fake_articles }}</h5>
+                        <p class="text-muted mb-0">Fake News</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-6 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-check-circle text-success fa-2x mb-2"></i>
+                        <h5>{{ stats.real_articles }}</h5>
+                        <p class="text-muted mb-0">Real News</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Articles -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-history"></i> Recent Articles</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_articles %}
+                    {% for article in recent_articles %}
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="flex-shrink-0">
+                                {% if article.is_fake %}
+                                    <i class="fas fa-times-circle text-danger"></i>
+                                {% elif article.is_fake == False %}
+                                    <i class="fas fa-check-circle text-success"></i>
+                                {% else %}
+                                    <i class="fas fa-question-circle text-warning"></i>
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">{{ article.title|truncatechars:50 }}</h6>
+                                {% if article.content %}
+                                    <p class="text-muted mb-1 small">{{ article.content|truncatechars:100 }}</p>
+                                {% endif %}
+                                <small class="text-muted">{{ article.created_at|date:"M d, Y" }}</small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted text-center">No articles analyzed yet.</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-bolt"></i> Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'news_analyzer:results_dashboard' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-chart-bar"></i> View All Results
+                    </a>
+                    <a href="{% url 'news_analyzer:training_dashboard' %}" class="btn btn-outline-success">
+                        <i class="fas fa-cogs"></i> Training Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Ensure tabs are working
+    console.log('Tabs initialized');
+    console.log('Manual tab exists:', $('#manual-tab').length);
+    console.log('URL tab exists:', $('#url-tab').length);
+    console.log('Manual content exists:', $('#manual').length);
+    console.log('URL content exists:', $('#url').length);
+    
+    // Initialize Bootstrap tabs
+    var triggerTabList = [].slice.call(document.querySelectorAll('#analysisTabs button'))
+    triggerTabList.forEach(function (triggerEl) {
+        var tabTrigger = new bootstrap.Tab(triggerEl)
+        
+        triggerEl.addEventListener('click', function (event) {
+            event.preventDefault()
+            tabTrigger.show()
+            console.log('Tab clicked:', triggerEl.id);
+        })
+    })
+    
+    // Manual form submission
+    $('#analyzeForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        const content = $('#content').val().trim();
+        if (!content) {
+            alert('Please enter article content to analyze.');
+            $('#content').focus();
+            return;
+        }
+        
+        const formData = {
+            title: $('#title').val() || '',
+            content: content,
+            source: $('#source').val()
+        };
+        
+        analyzeArticle(formData, '{% url "news_analyzer:analyze_article" %}');
+    });
+    
+    // URL form submission
+    $('#urlAnalyzeForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        const url = $('#articleUrl').val().trim();
+        if (!url) {
+            alert('Please enter a URL to analyze.');
+            $('#articleUrl').focus();
+            return;
+        }
+        
+        const formData = {
+            url: url
+        };
+        
+        analyzeArticle(formData, '{% url "news_analyzer:analyze_url" %}');
+    });
+    
+    // Add click handlers for tabs to ensure they work
+    $('#manual-tab').on('click', function() {
+        console.log('Manual tab clicked');
+    });
+    
+    $('#url-tab').on('click', function() {
+        console.log('URL tab clicked');
+        console.log('URL content should be visible now');
+    });
+    
+    function showUrlTab() {
+        console.log('Forcing URL tab to show');
+        $('#url-tab').click();
+        $('#url').addClass('show active');
+        $('#manual').removeClass('show active');
+        $('#manual-tab').removeClass('active');
+        $('#url-tab').addClass('active');
+    }
+    
+    function analyzeArticle(formData, endpoint) {
+        // Show loading
+        $('.loading').show();
+        $('#resultsCard').hide();
+        
+        $.ajax({
+            url: endpoint,
+            method: 'POST',
+            data: JSON.stringify(formData),
+            contentType: 'application/json',
+            headers: {
+                'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(response) {
+                $('.loading').hide();
+                displayResults(response);
+            },
+            error: function(xhr) {
+                $('.loading').hide();
+                let errorMessage = 'Unknown error occurred';
+                
+                if (xhr.responseJSON && xhr.responseJSON.error) {
+                    errorMessage = xhr.responseJSON.error;
+                } else if (xhr.status === 0) {
+                    errorMessage = 'Network error. Please check your internet connection.';
+                } else if (xhr.status === 400) {
+                    errorMessage = 'Invalid request. Please check your input.';
+                } else if (xhr.status === 500) {
+                    errorMessage = 'Server error. Please try again later.';
+                }
+                
+                alert('Error analyzing article: ' + errorMessage);
+            }
+        });
+    }
+    
+    function displayResults(data) {
+        const resultCard = $('#resultsCard');
+        const resultIcon = $('#resultIcon');
+        const resultText = $('#resultText');
+        const confidenceFill = $('#confidenceFill');
+        const confidenceText = $('#confidenceText');
+        const explanationText = $('#explanationText');
+        const viewDetailsBtn = $('#viewDetailsBtn');
+        
+        // Set result icon and text
+        if (data.is_fake === true) {
+            resultIcon.html('<i class="fas fa-times-circle text-danger"></i>');
+            resultText.html('<span class="text-danger">LIKELY FAKE NEWS</span>');
+            confidenceFill.removeClass().addClass('confidence-fill confidence-low');
+        } else if (data.is_fake === false) {
+            resultIcon.html('<i class="fas fa-check-circle text-success"></i>');
+            resultText.html('<span class="text-success">LIKELY REAL NEWS</span>');
+            confidenceFill.removeClass().addClass('confidence-fill confidence-high');
+        } else {
+            resultIcon.html('<i class="fas fa-question-circle text-warning"></i>');
+            resultText.html('<span class="text-warning">UNCERTAIN</span>');
+            confidenceFill.removeClass().addClass('confidence-fill confidence-medium');
+        }
+        
+        // Set confidence bar
+        const confidencePercent = Math.round(data.confidence * 100);
+        confidenceFill.css('width', confidencePercent + '%');
+        confidenceText.text(`Confidence: ${confidencePercent}%`);
+        
+        // Set explanation
+        explanationText.text(data.explanation);
+        
+        // Display additional article information if available
+        if (data.article_info) {
+            $('#articleSource').text(data.article_info.source || 'Unknown');
+            
+            // Set source reliability with appropriate badge
+            const reliability = data.article_info.source_reliability || 'unknown';
+            let reliabilityHtml = '';
+            if (reliability === 'reliable') {
+                reliabilityHtml = '<span class="badge bg-success">Reliable</span>';
+            } else if (reliability === 'unreliable') {
+                reliabilityHtml = '<span class="badge bg-danger">Unreliable</span>';
+            } else {
+                reliabilityHtml = '<span class="badge bg-warning">Unknown</span>';
+            }
+            $('#sourceReliability').html(reliabilityHtml);
+            
+            $('#publishedAt').text(data.article_info.published_at || 'Unknown');
+            $('#articleAuthor').text(data.article_info.author || 'Unknown');
+            $('#articleInfo').show();
+        } else {
+            $('#articleInfo').hide();
+        }
+        
+        // Display enhanced fact-checking results if available
+        if (data.analysis_details && data.analysis_details.fact_check_analysis) {
+            const factCheck = data.analysis_details.fact_check_analysis;
+            
+            // Content analysis
+            const contentAnalysis = factCheck.content_analysis || {};
+            const fakeIndicators = contentAnalysis.fake_indicators_found || 0;
+            const credibleIndicators = contentAnalysis.credible_indicators_found || 0;
+            $('#contentAnalysis').text(`${fakeIndicators} fake indicators, ${credibleIndicators} credible indicators`);
+            
+            // Google Fact Check results
+            const factCheckClaims = factCheck.fact_check_claims || [];
+            const verifiedClaims = factCheckClaims.filter(claim => 
+                claim.rating && claim.rating.toLowerCase().includes('true')
+            ).length;
+            const falseClaims = factCheckClaims.filter(claim => 
+                claim.rating && ['false', 'fake', 'hoax'].some(word => 
+                    claim.rating.toLowerCase().includes(word)
+                )
+            ).length;
+            $('#googleFactCheck').text(`${verifiedClaims} verified, ${falseClaims} false claims`);
+            
+            // Display individual fact-check claims
+            if (factCheckClaims.length > 0) {
+                let claimsHtml = '';
+                factCheckClaims.slice(0, 3).forEach(claim => {
+                    const rating = claim.rating || 'Unknown';
+                    const publisher = claim.publisher || 'Unknown';
+                    const claimText = claim.claim_text || claim.query || 'Unknown claim';
+                    const badgeClass = rating.toLowerCase().includes('true') ? 'bg-success' : 
+                                    rating.toLowerCase().includes('false') ? 'bg-danger' : 'bg-warning';
+                    
+                    claimsHtml += `
+                        <div class="mb-1">
+                            <span class="badge ${badgeClass} me-1">${rating}</span>
+                            <span class="text-muted">${publisher}:</span>
+                            <span class="small">${claimText.substring(0, 80)}...</span>
+                        </div>
+                    `;
+                });
+                $('#factCheckClaims').html(claimsHtml);
+            } else {
+                $('#factCheckClaims').text('No fact-check claims found');
+            }
+            
+            $('#factCheckResults').show();
+        } else {
+            $('#factCheckResults').hide();
+        }
+        
+        // Set view details link
+        viewDetailsBtn.attr('href', `/news/article/${data.article_id}/`);
+        
+        // Show results
+        resultCard.show();
+        resultCard[0].scrollIntoView({ behavior: 'smooth' });
+    }
+});
+</script>
+{% endblock %} 

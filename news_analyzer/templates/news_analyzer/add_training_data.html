@@ -1,0 +1,111 @@
+{% extends 'news_analyzer/base.html' %}
+
+{% block title %}Add Training Data - Fake News Detector{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h3 class="mb-0"><i class="fas fa-plus"></i> Add Training Data</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Article Title *</label>
+                        <input type="text" class="form-control" id="title" name="title" required
+                               placeholder="Enter the article title...">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Article Content *</label>
+                        <textarea class="form-control" id="content" name="content" rows="8" required
+                                  placeholder="Paste the full article content here..."></textarea>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label for="source" class="form-label">Source (Optional)</label>
+                                <input type="text" class="form-control" id="source" name="source"
+                                       placeholder="e.g., CNN, BBC, Reuters, etc.">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="is_fake" class="form-label">Label *</label>
+                                <select class="form-select" id="is_fake" name="is_fake" required>
+                                    <option value="">Select label...</option>
+                                    <option value="true">Fake News</option>
+                                    <option value="false">Real News</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Training Data Guidelines:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Use clear, unambiguous examples</li>
+                            <li>Include diverse sources and topics</li>
+                            <li>Ensure accurate labeling</li>
+                            <li>Include both recent and historical content</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'news_analyzer:training_dashboard' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Dashboard
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i> Add Training Data
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Quick Add Examples -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-lightbulb"></i> Quick Add Examples</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-danger">Fake News Examples:</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <small class="text-muted">"Doctors hate this one weird trick..."</small>
+                            </li>
+                            <li class="mb-2">
+                                <small class="text-muted">"Shocking conspiracy theory about..."</small>
+                            </li>
+                            <li class="mb-2">
+                                <small class="text-muted">"They don't want you to know..."</small>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-success">Real News Examples:</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <small class="text-muted">"Study shows that..."</small>
+                            </li>
+                            <li class="mb-2">
+                                <small class="text-muted">"According to experts..."</small>
+                            </li>
+                            <li class="mb-2">
+                                <small class="text-muted">"Official statement from..."</small>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
